@@ -11,7 +11,7 @@ area=['A','B','C','D','E']
 Aprice, Bprice, Cprice = 500, 800, 300
 Adata={"1f":50,"2f":50,"out":50}
 A1f, A2f, Aout = [], [], []
-Bdata={"1f":100,"2f":100}
+Bdata={"1f":50,"2f":100}
 B1f, B2f = [], []
 Cdata={"out":50}
 Cout=[]
@@ -61,8 +61,6 @@ def Login():
                 print()
                 print("-"*72)
                 return ID, PW
-                Parking(ID,PW)
-                Paying(ID,PW)
             else:
                 print("비밀번호가 틀렸습니다")
                 continue
@@ -231,7 +229,7 @@ def Paying(ID,PW):
                 price= Bprice
             if paydata[ID]== "C":
                 price= Cprice
-            total=(day/(24*60)+(hour/60)+minu)//10*price
+            total=((day*24*60)+(hour*60)+minu)//10*price
             while True:
                 print("-"*72,"\n")
                 print("현재 시간:",out,"총 주차시간:",day,"일",hour,"시간",minu,"분")
