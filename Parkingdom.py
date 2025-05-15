@@ -210,52 +210,63 @@ def Parking(ID,PW):
             
                 
 #출차하기
-def Paying(ID,PW):
+def Paying(ID, PW):
     while True:
-        print("-"*72,"\n")
-        print(ID,"차량 출차를 원하면 비밀번호를 입력해주세요")
-        out_PW=input("비밀번호:")
+        print("-" * 72, "\n")
+        print(ID, "차량 출차를 원하면 비밀번호를 입력해주세요")
+        out_PW = input("비밀번호:")
         print()
-        print("-"*72)
-        if out_PW==PW:
-            ent=entri[(ID,PW)]
-            out=str(datetime.now())[5:19]
-            day=abs(int(out[3:5])-int(ent[3:5]))
-            hour=abs(int(out[6:8])-int(ent[6:8]))
-            minu=abs(int(out[9:11])-int(ent[9:11]))
-            if paydata[ID]== "A":
-                price= Aprice
-            if paydata[ID]== "B":
-                price= Bprice
-            if paydata[ID]== "C":
-                price= Cprice
-            total=((day*24*60)+(hour*60)+minu)//10*price
+        print("-" * 72)
+        if out_PW == PW:
+            ent = entri[(ID, PW)]
+            out = str(datetime.now())[5:19]
+
+            try:
+                ent_time = datetime.strptime("2025-" + ent, "%Y-%m-%d %H:%M:%S")
+            except ValueError:
+                ent_time = datetime.strptime("2025-" + ent, "%Y-%m-%d %H:%M")
+
+            try:
+                out_time = datetime.strptime("2025-" + out, "%Y-%m-%d %H:%M:%S")
+            except ValueError:
+                out_time = datetime.strptime("2025-" + out, "%Y-%m-%d %H:%M")
+
+            total_minutes = int((out_time - ent_time).total_seconds() // 60)
+
+            if paydata[ID] == "A":
+                price = Aprice
+            elif paydata[ID] == "B":
+                price = Bprice
+            elif paydata[ID] == "C":
+                price = Cprice
+
+            total = (total_minutes // 10) * price
+
+            total_hours = total_minutes // 60
+            total_rem_min = total_minutes % 60
+
             while True:
-                print("-"*72,"\n")
-                print("현재 시간:",out,"총 주차시간:",day,"일",hour,"시간",minu,"분")
-                print("결제금액:",total,"원")
+                print("-" * 72, "\n")
+                print("현재 시간:", out, "총 주차시간:", total_hours, "시간", total_rem_min, "분")
+                print("결제금액:", total, "원")
                 print()
-                print("-"*72)
+                print("-" * 72)
                 print("1.멤버쉽결제 {10%할인가} 2.일반결제")
-                pay=int(input("결제방식을 선택해주세요:"))
-                if pay ==1:
-                    secure=input("비밀번호를 입력하세요:")
+                pay = int(input("결제방식을 선택해주세요:"))
+                if pay == 1:
+                    secure = input("비밀번호를 입력하세요:")
                     if secure == PW:
-                        dis=total-(total*0.1)
-                        print(dis,"원 결제완료되었습니다 안녕히가십시오:)")
+                        dis = int(total * 0.9)
+                        print(dis, "원 결제완료되었습니다. 안녕히가십시오 :)")
                         return
-                        
                     else:
                         print("잘못된 번호입니다")
                         continue
-                            
-                            
-                elif pay ==2:
-                    secure=input("비밀번호를 입력하세요:")
+                elif pay == 2:
+                    secure = input("비밀번호를 입력하세요:")
                     if secure == PW:
-                        print(total,"원 결제완료되었습니다")
+                        print(total, "원 결제완료되었습니다")
                         return
-                        
                     else:
                         print("잘못된 번호입니다")
                         continue
@@ -265,7 +276,6 @@ def Paying(ID,PW):
         else:
             print("비밀번호가 틀렸습니다")
             continue
-            
 #관리
 def Setting():
     global Aprice, Bprice, Cprice
